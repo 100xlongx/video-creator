@@ -1,5 +1,8 @@
 env/
 assets/*
 output/*
+audio/*
+__pycache__/
+.env
 
 !assets/tiktok_background.jpg
