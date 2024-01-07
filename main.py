@@ -48,10 +48,10 @@ top_image_clip = top_image_clip.set_position(("center", y_coordinate - (image_he
 bottom_image_clip = bottom_image_clip.set_position(("center", y_coordinate + (image_height * 0.75)))
 
 # Create a TextClip object for top text
-txt_clip_top = TextClip(top_topic, fontsize=70, color='white').set_position(("center", "top")).set_duration(10)
+txt_clip_top = TextClip(top_topic, fontsize=70, color='white', stroke_color='black', stroke_width=2, font='Verdana').set_position(("center", "top")).set_duration(10)
 
 # Create a TextClip object for bottom text
-txt_clip_bottom = TextClip(bottom_topic, fontsize=70, color='white').set_position(("center", "bottom")).set_duration(10)
+txt_clip_bottom = TextClip(bottom_topic, fontsize=70, color='white', stroke_color='black', stroke_width=2, font='Verdana').set_position(("center", "bottom")).set_duration(10)
 
 # Overlay the text clips on the image clips
 # You might want to adjust the position based on the size and position of your images

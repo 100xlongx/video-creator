@@ -1,4 +1,5 @@
 env/
 assets/*
+output/*
 
 !assets/tiktok_background.jpg
