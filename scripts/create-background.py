@@ -17,10 +17,10 @@ blue_square = np.full((blue_height, width, 3), (255, 0, 0), dtype=np.uint8)  # R
 # Stack them vertically
 background = np.vstack((red_square, black_line, blue_square))
 
-# Display the image using OpenCV
-cv2.imshow('Background', background)
-cv2.waitKey(0)  # Wait for keypress to close
-cv2.destroyAllWindows()
+# # Display the image using OpenCV
+# cv2.imshow('Background', background)
+# cv2.waitKey(0)  # Wait for keypress to close
+# cv2.destroyAllWindows()
 
 # Save the image
 cv2.imwrite('assets/tiktok_background.jpg', background)
