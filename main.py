@@ -16,11 +16,13 @@ parser = argparse.ArgumentParser(description="Video Creation Tool")
 parser.add_argument("-tt", "--top_text", required=True, help="The top text")
 parser.add_argument("-bt", "--bottom_text", required=True, help="Enter the bottom text")
 
-parser.add_argument("-tp", "--top_prompt", help="Enter the top prompt (optional, defaults to top text if not provided)")
-parser.add_argument("-bp", "--bottom_prompt", help="Enter the bottom prompt (optional, defaults to bottom text if not provided)")
+parser.add_argument("-tp", "--top_image_prompt", help="Enter the top prompt (optional, defaults to top text if not provided)")
+parser.add_argument("-bp", "--bottom_image_prompt", help="Enter the bottom prompt (optional, defaults to bottom text if not provided)")
+
+parser.add_argument("-v", "--voiceover", required=False, help="The voiceover that will be used. Will create one if not provided");
 
 # parser.add_argument("-vf", "--voiceover_file", required=False, help="Path to the voiceover audio file (will use openAI to create one if not provided)")
-parser.add_argument("-o", "--output", required=False, help="Output file path")
+# parser.add_argument("-o", "--output", required=False, help="Output file path")
 
 parser.add_argument("--image_source", choices=['bing', 'dalle', 'manual'], default='bing', help="Choose the image source: bing (default), dalle, or manual")
 parser.add_argument("--top_image_url", help="URL for the top image (required if image_source is manual)")
@@ -28,29 +30,25 @@ parser.add_argument("--bottom_image_url", help="URL for the bottom image (requir
 
 args = parser.parse_args()
 
+# Get the top and bottom text from the command line arguments
 top_text = args.top_text
 bottom_text = args.bottom_text
 
-top_prompt = args.top_prompt if args.top_prompt is not None else top_text
-bottom_prompt = args.bottom_prompt if args.bottom_prompt is not None else bottom_text
+# Get the top and bottom prompts from the command line arguments. used to search or generate images
+top_prompt = args.top_image_prompt if args.top_prompt is not None else top_text
+bottom_prompt = args.bottom_image_prompt if args.bottom_prompt is not None else bottom_text
 
-# default output path has underscores instead of spaces
-output = args.output if args.output is not None else f"output/red_blue/{top_text.replace(' ', '_')}-{bottom_text.replace(' ', '_')}.mp4"
-
-if args.image_source == 'dalle':
-    # Code to call the DALL-E API for images using top_prompt and bottom_prompt
-    # You will need to implement the logic for calling DALL-E API
-    pass
-elif args.image_source == 'manual':
+if args.image_source == 'manual':
     if not args.top_image_url or not args.bottom_image_url:
         parser.error("Top and bottom image URLs are required when image_source is set to manual.")
-    top_image_path = args.top_image_url
-    bottom_image_path = args.bottom_image_url
-else:  # Default to Bing image downloader
-    top_image_path = create_image_path_from_keyword(top_prompt)
-    bottom_image_path = create_image_path_from_keyword(bottom_prompt)
 
+top_image_path = create_image_path_from_keyword(top_prompt, image_source=args.image_source, manual_image_url=args.top_image_url)
+bottom_image_path = create_image_path_from_keyword(bottom_prompt, image_source=args.image_source, manual_image_url=args.bottom_image_url)
 voiceover_filepath = openai_wrapper.generate_speech(f"Would you rather pick {top_text} or {bottom_text}?")
+output_path = args.output if args.output is not None else f"output/red_blue/{top_text.replace(' ', '_')}-{bottom_text.replace(' ', '_')}.mp4"
+
+if not top_image_path or not bottom_image_path:
+    raise Exception("Failed to get images")
 
 # transcription = openai_wrapper.generate_transcription(file_path=audio_filepath, response_format="json")
 # voiceover_filepath = f"audio/rick sanchez turning himself into a pickle-travis scott fortnite skin.mp3"
@@ -61,10 +59,6 @@ bottom_start_time = top_start_time + 2
 
 # Load the background image as a clip
 background_clip = ImageClip('assets/tiktok_background.jpg').set_duration(video_duration)  # duration in seconds
-
-# Construct the paths to the downloaded images
-top_image_path = create_image_path_from_keyword(top_prompt)
-bottom_image_path = create_image_path_from_keyword(bottom_prompt)
 
 # Create image clips for the top and bottom images
 top_image_clip = ImageClip(top_image_path).set_duration(10).resize(height=image_height).set_position(("center", y_coordinate - (image_height * 0.75))).crossfadein(1).set_start(top_start_time)
@@ -92,4 +86,4 @@ final_composite_audio = CompositeAudioClip([combined_audio, background_music])
 final_clip = CompositeVideoClip([background_clip, top_image_clip, bottom_image_clip, txt_clip_top, txt_clip_bottom]).set_audio(final_composite_audio).set_duration(video_duration)
 
 # Write the result to a file
-final_clip.write_videofile(output, fps=24)
+final_clip.write_videofile(output_path, fps=24)
