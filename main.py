@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 from red_blue import create_video
 import argparse
 
-
 def main():
     load_dotenv()
 
