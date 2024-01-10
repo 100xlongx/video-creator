@@ -1,8 +1,7 @@
 env/
-assets/*
+assets/bing_images/*
+assets/manual_images/*
 output/*
-audio/*
+audio/voice_overs/*
 __pycache__/
 .env
-
-!assets/tiktok_background.jpg
