@@ -30,17 +30,14 @@ top_prompt = args.top_prompt if args.top_prompt is not None else top_text
 bottom_prompt = args.bottom_prompt if args.bottom_prompt is not None else bottom_text
 
 # default output path has underscores instead of spaces
-output = args.output if args.output is not None else f"output/{top_text.replace(' ', '_')}-{bottom_text.replace(' ', '_')}.mp4"
+output = args.output if args.output is not None else f"output/red_blue/{top_text.replace(' ', '_')}-{bottom_text.replace(' ', '_')}.mp4"
 
 if args.voiceover_file is not None:
     voiceover_filepath = args.voiceover_file
 else:
     openai_wrapper = OpenAIWrapper(os.getenv("OPENAI_API_KEY"))
 
-    voiceover_filepath = openai_wrapper.generate_speech(
-        f"Would you rather pick {top_text} or {bottom_text}?",
-        file_path=f"audio/voice_overs/{top_text.replace(' ', '_')}-{bottom_text.replace(' ', '_')}.mp3"
-    )
+    voiceover_filepath = openai_wrapper.generate_speech(f"Would you rather pick {top_text} or {bottom_text}?")
 
 # transcription = openai_wrapper.generate_transcription(file_path=audio_filepath, response_format="json")
 # voiceover_filepath = f"audio/rick sanchez turning himself into a pickle-travis scott fortnite skin.mp3"
