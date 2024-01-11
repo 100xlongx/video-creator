@@ -30,12 +30,13 @@ def generate_code_challenge(code_verifier):
 code_verifier = generate_code_verifier()
 code_challenge = generate_code_challenge(code_verifier)
 state_token = secrets.token_urlsafe(16)
-redirect = "https://localhost:8000/callback"
+redirect = "http://localhost:8000/callback"
+full_scopes = 'user.info.basic,video.publish,video.upload'
 
 query_params = {
     'client_key': os.getenv('TIKTOK_CLIENT_KEY'),
     'redirect_uri': redirect,
-    'scope': os.getenv('TIKTOK_SCOPES'),
+    'scope': 'user.info.basic',
     'state': state_token,
     'response_type': 'code',
     'code_challenge': code_challenge,
@@ -44,6 +45,16 @@ query_params = {
 
 encoded_query_params = urlencode(query_params)
 
-auth_page = f"https://www.tiktok.com/v2/auth/authorize?{encoded_query_params}"
+auth_page = f"https://www.tiktok.com/v2/auth/authorize/?{encoded_query_params}"
+
+# web_params = {
+#     'client_key': os.getenv('TIKTOK_CLIENT_KEY'),
+#     'redirect_uri': 'https://14a7-172-8-196-38.ngrok-free.app',
+#     'scope': 'user.info.basic,video.publish,video.upload',
+#     'state': secrets.token_urlsafe(16),
+#     'response_type': 'code',
+# }
+
+# web_auth_page = f"https://www.tiktok.com/v2/auth/authorize/?{urlencode(web_params)}"
 
 print(auth_page)
