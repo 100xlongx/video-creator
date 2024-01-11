@@ -11,7 +11,7 @@ load_dotenv()
 PORT = 8000
 CLIENT_KEY = os.getenv("TIKTOK_CLIENT_KEY")
 CLIENT_SECRET = os.getenv("TIKTOK_CLIENT_SECRET")
-REDIRECT_URI = 'http://localhost:8000'  # This should match the redirect URI registered with TikTok
+REDIRECT_URI = 'http://localhost:8000/callback'  # This should match the redirect URI registered with TikTok
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
